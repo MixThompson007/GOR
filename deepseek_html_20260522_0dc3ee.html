@@ -572,11 +572,11 @@
   <!-- Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(function(err) {
+      navigator.serviceWorker.register('/gor-app/sw.js').catch(function(err) {
         console.log('ServiceWorker registration failed: ', err);
       });
     }
-  </script>
+</script>
   
   <!-- Main JS -->
   <script src="main.js"></script>
