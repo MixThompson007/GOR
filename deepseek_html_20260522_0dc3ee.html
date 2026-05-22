@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>GOR — GBH Online Return</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#3B6D11"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="GOR"/>
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/7PJXNn4h/007.gif"/>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- ==================== หน้า Login ==================== -->
+  <div id="page-login" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-logo-wrap">
+        <svg width="180" height="48" viewBox="0 0 180 48">
+          <rect x="0" y="8" width="4" height="30" rx="2" fill="#BA7517"/>
+          <text x="14" y="34" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#3B6D11" letter-spacing="3">GOR</text>
+          <text x="15" y="44" font-family="Inter,sans-serif" font-size="7.5" fill="#BA7517" letter-spacing="1.5" font-weight="500">GBH ONLINE RETURN</text>
+        </svg>
+      </div>
+      <p class="auth-subtitle">กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+      
+      <div class="form-group">
+        <label>อีเมล</label>
+        <input type="email" id="login-email" placeholder="example@email.com" autocomplete="email"/>
+      </div>
+      
+      <div class="form-group">
+        <label>รหัสผ่าน</label>
+        <div class="input-icon-wrap">
+          <input type="password" id="login-password" placeholder="รหัสผ่าน" autocomplete="current-password" onkeydown="if(event.key==='Enter')handleLogin()"/>
+          <i class="ti ti-eye input-icon" onclick="togglePassword('login-password',this)"></i>
+        </div>
+      </div>
+      
+      <div id="login-error" class="alert-error" style="display:none"></div>
+      
+      <button class="btn-primary" onclick="handleLogin()">
+        <i class="ti ti-login"></i> เข้าสู่ระบบ
+      </button>
+      
+      <p class="auth-link">ยังไม่มีบัญชี? <a href="#" onclick="showAuth('page-register')">ลงทะเบียน</a></p>
+      <p class="auth-link"><a href="#" onclick="forgotPassword()">ลืมรหัสผ่าน?</a></p>
+      <p class="credit-text">Designed & Developed by <span>Mix Thompson</span></p>
+      <p class="credit-text" style="margin-top:4px;font-size:10px;opacity:.7">GOR v3.1</p>
+    </div>
+  </div>
+
+  <!-- ==================== หน้า Register ==================== -->
+  <div id="page-register" class="auth-wrapper" style="display:none">
+    <div class="auth-card">
+      <div class="auth-logo-wrap">
+        <svg width="180" height="48" viewBox="0 0 180 48">
+          <rect x="0" y="8" width="4" height="30" rx="2" fill="#BA7517"/>
+          <text x="14" y="34" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#3B6D11" letter-spacing="3">GOR</text>
+          <text x="15" y="44" font-family="Inter,sans-serif" font-size="7.5" fill="#BA7517" letter-spacing="1.5" font-weight="500">GBH ONLINE RETURN</text>
+        </svg>
+      </div>
+      <p class="auth-subtitle">กรอกข้อมูลเพื่อขอสิทธิ์เข้าใช้งาน</p>
+      
+      <div class="form-group"><label>ชื่อ-นามสกุล</label><input type="text" id="reg-name" placeholder="ชื่อ นามสกุล" autocomplete="name"/></div>
+      <div class="form-group"><label>ชื่อที่ใช้แสดง</label><input type="text" id="reg-display" placeholder="ชื่อเล่น"/></div>
+      <div class="form-group"><label>อีเมล</label><input type="email" id="reg-email" placeholder="example@email.com" autocomplete="email"/></div>
+      
+      <div class="form-group">
+        <label>รหัสผ่าน</label>
+        <div class="input-icon-wrap">
+          <input type="password" id="reg-password" placeholder="อย่างน้อย 6 ตัวอักษร" autocomplete="new-password"/>
+          <i class="ti ti-eye input-icon" onclick="togglePassword('reg-password',this)"></i>
+        </div>
+      </div>
+      
+      <div id="reg-error" class="alert-error" style="display:none"></div>
+      <div id="reg-success" class="alert-success" style="display:none"></div>
+      
+      <button class="btn-primary" onclick="handleRegister()">
+        <i class="ti ti-user-check"></i> ส่งคำขอลงทะเบียน
+      </button>
+      
+      <p class="auth-link">มีบัญชีแล้ว? <a href="#" onclick="showAuth('page-login')">เข้าสู่ระบบ</a></p>
+      <p class="credit-text">Designed & Developed by <span>Mix Thompson</span></p>
+      <p class="credit-text" style="margin-top:4px;font-size:10px;opacity:.7">GOR v3.1</p>
+    </div>
+  </div>
+
+  <!-- ==================== หน้า Reset Password ==================== -->
+  <div id="page-reset" class="auth-wrapper" style="display:none">
+    <div class="auth-card">
+      <div class="auth-logo-wrap">
+        <svg width="180" height="48" viewBox="0 0 180 48">
+          <rect x="0" y="8" width="4" height="30" rx="2" fill="#BA7517"/>
+          <text x="14" y="34" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#3B6D11" letter-spacing="3">GOR</text>
+          <text x="15" y="44" font-family="Inter,sans-serif" font-size="7.5" fill="#BA7517" letter-spacing="1.5" font-weight="500">GBH ONLINE RETURN</text>
+        </svg>
+      </div>
+      <p class="auth-subtitle">🔐 ตั้งรหัสผ่านใหม่</p>
+      
+      <div class="form-group">
+        <label>รหัสผ่านใหม่</label>
+        <div class="input-icon-wrap">
+          <input type="password" id="reset-password" placeholder="อย่างน้อย 6 ตัวอักษร" autocomplete="new-password"/>
+          <i class="ti ti-eye input-icon" onclick="togglePassword('reset-password',this)"></i>
+        </div>
+      </div>
+      
+      <div id="reset-error" class="alert-error" style="display:none"></div>
+      <div id="reset-success" class="alert-success" style="display:none"></div>
+      
+      <button class="btn-primary" onclick="handleResetPassword()">
+        <i class="ti ti-check"></i> ตั้งรหัสผ่านใหม่
+      </button>
+      
+      <p class="auth-link"><a href="#" onclick="showAuth('page-login')">กลับไปหน้า Login</a></p>
+      <p class="credit-text">Designed & Developed by <span>Mix Thompson</span></p>
+      <p class="credit-text" style="margin-top:4px;font-size:10px;opacity:.7">GOR v3.1</p>
+    </div>
+  </div>
+
+  <!-- ==================== แอพหลัก ==================== -->
+  <div id="app" style="display:none">
+    <!-- Top Bar -->
+    <div class="topbar">
+      <svg width="120" height="36" viewBox="0 0 180 48">
+        <rect x="0" y="8" width="4" height="30" rx="2" fill="#BA7517"/>
+        <text x="14" y="34" font-family="Inter,sans-serif" font-size="26" font-weight="700" fill="#3B6D11" letter-spacing="3">GOR</text>
+        <text x="15" y="44" font-family="Inter,sans-serif" font-size="7.5" fill="#BA7517" letter-spacing="1.5" font-weight="500">GBH ONLINE RETURN</text>
+      </svg>
+      
+      <div style="display:flex;gap:4px;align-items:center">
+        <button class="icon-btn" id="btn-update" style="display:none;position:relative" onclick="openUpdateLog()" title="มีอะไรใหม่">
+          <i class="ti ti-sparkles"></i>
+          <span style="position:absolute;top:2px;right:2px;width:8px;height:8px;background:#E02424;border-radius:50%"></span>
+        </button>
+        <button class="icon-btn" onclick="toggleTheme()" id="btn-theme"><i class="ti ti-sun"></i></button>
+        <button class="icon-btn" onclick="openReportModal()"><i class="ti ti-alert-triangle"></i></button>
+        <button class="icon-btn" id="btn-noti" style="display:none;position:relative" onclick="openNotifications()">
+          <i class="ti ti-bell"></i>
+          <span id="noti-badge" style="display:none;position:absolute;top:2px;right:2px;width:18px;height:18px;background:#E02424;border-radius:50%;color:white;font-size:10px;align-items:center;justify-content:center;font-weight:700">0</span>
+        </button>
+        <button class="icon-btn" id="btn-admin" style="display:none" onclick="showPage('admin')"><i class="ti ti-users"></i></button>
+        <button class="icon-btn" onclick="handleLogout()"><i class="ti ti-logout"></i></button>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+      
+      <!-- หน้าหลัก -->
+      <div id="pg-home" class="page">
+        <div class="welcome-bar">
+          <div>
+            <div class="welcome-name" id="welcome-name">สวัสดีครับ</div>
+            <div class="welcome-sub" id="welcome-date"></div>
+          </div>
+        </div>
+        <div class="stat-grid" id="stat-grid"></div>
+        <div class="section-title">📋 รายการล่าสุด</div>
+        <div id="recent-list"></div>
+      </div>
+
+      <!-- หน้ารายการ -->
+      <div id="pg-list" class="page" style="display:none">
+        <div class="search-wrap">
+          <div class="search-bar">
+            <i class="ti ti-search"></i>
+            <input type="text" id="search-input" placeholder="🔍 ค้นหาทุกอย่าง..." oninput="handleSearch()"/>
+            <button class="btn-scan" onclick="startScan('search-input')"><i class="ti ti-scan"></i></button>
+          </div>
+          <div class="filter-row" id="filter-row">
+            <button class="filter-btn active" onclick="setFilter('',this)">ทั้งหมด</button>
+            <button class="filter-btn" onclick="setFilter('pending',this)">⏳ รอดำเนินการ</button>
+            <button class="filter-btn" onclick="setFilter('returned',this)">✅ ทำคืนแล้ว</button>
+            <button class="filter-btn" onclick="setFilter('platform_claim',this)">📋 รับเคลม</button>
+            <button class="filter-btn" onclick="setFilter('damaged_done',this)">📄 ชำรุด</button>
+            <button class="filter-btn" onclick="setFilter('wait_damage',this)">🔧 รอทำชำรุด</button>
+            <button class="filter-btn" onclick="setFilter('wait_claim',this)">📬 รอยื่นเคลม</button>
+            <button class="filter-btn" onclick="setFilter('claim_failed',this)">❌ เคลมไม่ผ่าน</button>
+            <button class="filter-btn" onclick="setFilter('unboxed',this)" style="border:2px solid #E02424">📦 ยังไม่แกะ</button>
+          </div>
+        </div>
+        <div id="returns-list"></div>
+      </div>
+
+      <!-- เลือกประเภทการบันทึก -->
+      <div id="pg-form-select" class="page" style="display:none">
+        <div class="form-header">เลือกประเภทการบันทึก</div>
+        <div style="display:flex;gap:16px;margin-top:20px;flex-wrap:wrap">
+          <div class="choice-card" onclick="showPage('form')" style="flex:1;min-width:140px;background:var(--card);border:2px solid var(--border);border-radius:16px;padding:24px;text-align:center;cursor:pointer">
+            <i class="ti ti-package" style="font-size:48px;color:var(--primary)"></i>
+            <div style="font-weight:700;font-size:16px;margin-top:12px">📦 เริ่มแกะพัสดุ</div>
+            <div style="font-size:12px;color:var(--text-sub);margin-top:4px">บันทึกข้อมูลสินค้าตีกลับ</div>
+          </div>
+          <div class="choice-card" onclick="openUnboxedForm()" style="flex:1;min-width:140px;background:var(--card);border:2px solid #E02424;border-radius:16px;padding:24px;text-align:center;cursor:pointer">
+            <i class="ti ti-box" style="font-size:48px;color:#E02424"></i>
+            <div style="font-weight:700;font-size:16px;margin-top:12px">📦 พัสดุยังไม่แกะ</div>
+            <div style="font-size:12px;color:var(--text-sub);margin-top:4px">สแกนบาร์โค้ด + แนบรูป</div>
+          </div>
+        </div>
+        <div style="height:80px"></div>
+      </div>
+
+      <!-- แบบฟอร์มบันทึก -->
+      <div id="pg-form" class="page" style="display:none">
+        <div class="form-header">📝 บันทึกสินค้าตีกลับ</div>
+        <div class="form-group"><label>📅 วันที่บันทึก</label><input type="date" id="f-date"/></div>
+        <div class="form-group">
+          <label>🚚 บริษัทขนส่ง</label>
+          <select id="f-courier">
+            <option value="">-- เลือกขนส่ง --</option>
+            <option>J&T Express</option>
+            <option>Kerry Express</option>
+            <option>Flash Express</option>
+            <option>Thailand Post (EMS)</option>
+            <option>DHL</option>
+            <option>Ninja Van</option>
+            <option>Best Express</option>
+            <option>SPX Express (Shopee)</option>
+            <option>Lazada Logistics</option>
+          </select>
+        </div>
+        <div class="form-group"><label>📦 เลขที่ออเดอร์</label><div class="input-scan-row"><input type="text" id="f-order" placeholder="พิมพ์หรือสแกน..."/><button class="btn-scan" onclick="startScan('f-order')"><i class="ti ti-scan"></i></button></div></div>
+        <div class="form-group"><label>📮 เลขพัสดุ</label><div class="input-scan-row"><input type="text" id="f-tracking" placeholder="พิมพ์หรือสแกน..."/><button class="btn-scan" onclick="startScan('f-tracking')"><i class="ti ti-scan"></i></button></div></div>
+        <div class="form-group"><label>📄 เลขที่เอกสาร</label><div class="input-scan-row"><input type="text" id="f-docnum" placeholder="พิมพ์หรือสแกน..."/><button class="btn-scan" onclick="startScan('f-docnum')"><i class="ti ti-scan"></i></button></div></div>
+        <div class="form-group"><label>🔍 บาร์โค้ดสินค้า</label><div class="input-scan-row"><input type="text" id="f-barcode" placeholder="สแกนหรือพิมพ์บาร์โค้ดสินค้า..."/><button class="btn-scan" onclick="startScan('f-barcode')"><i class="ti ti-scan"></i></button></div></div>
+        
+        <div class="form-group">
+          <label>🔍 สภาพสินค้า</label>
+          <div class="condition-row">
+            <button class="cond-btn" id="btn-ok" onclick="setCondition('ok')"><i class="ti ti-circle-check"></i> ไม่ชำรุด</button>
+            <button class="cond-btn" id="btn-damaged" onclick="setCondition('damaged')"><i class="ti ti-xbox-x"></i> ชำรุด</button>
+          </div>
+        </div>
+        
+        <div id="damage-detail" style="display:none">
+          <div class="form-group"><label>📝 ระบุส่วนที่ชำรุด</label><textarea id="f-damage-desc" rows="2" placeholder="อธิบายส่วนที่ชำรุด..."></textarea></div>
+        </div>
+        
+        <div class="form-group"><label>📸 รูปภาพสินค้า (สูงสุด 10 ภาพ)</label>
+          <div style="display:flex;gap:8px">
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('f-images-camera')"><i class="ti ti-camera"></i><span>ถ่ายภาพ</span><input type="file" id="f-images-camera" accept="image/*" capture="environment" multiple onchange="previewMultiplePhotos(this,'f-images-label','prev-images')" style="display:none"/></div>
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('f-images-gallery')"><i class="ti ti-photo"></i><span>เลือกจากคลัง</span><input type="file" id="f-images-gallery" accept="image/*" multiple onchange="previewMultiplePhotos(this,'f-images-label','prev-images')" style="display:none"/></div>
+          </div>
+          <span id="f-images-label" style="font-size:11px;color:var(--text-sub);display:block;margin-top:4px">ยังไม่ได้เลือกภาพ</span>
+          <div id="prev-images" class="photo-grid"></div>
+        </div>
+        
+        <div class="form-group"><label>📸 รูปบาร์โค้ดสินค้า</label>
+          <div style="display:flex;gap:8px">
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('f-img-barcode-camera')"><i class="ti ti-camera"></i><span>ถ่ายภาพ</span><input type="file" id="f-img-barcode-camera" accept="image/*" capture="environment" onchange="previewPhoto(this,'f-img-barcode-label','prev-barcode')" style="display:none"/></div>
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('f-img-barcode-gallery')"><i class="ti ti-photo"></i><span>เลือกจากคลัง</span><input type="file" id="f-img-barcode-gallery" accept="image/*" onchange="previewPhoto(this,'f-img-barcode-label','prev-barcode')" style="display:none"/></div>
+          </div>
+          <span id="f-img-barcode-label" style="font-size:11px;color:var(--text-sub);display:block;margin-top:4px">ยังไม่ได้เลือกภาพ</span>
+          <img id="prev-barcode" class="photo-preview" style="display:none" alt="Preview barcode"/>
+        </div>
+        
+        <div class="form-group"><label>📸 รูปใบปะหน้าพัสดุ</label>
+          <div style="display:flex;gap:8px">
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('f-img-label-camera')"><i class="ti ti-camera"></i><span>ถ่ายภาพ</span><input type="file" id="f-img-label-camera" accept="image/*" capture="environment" onchange="previewPhoto(this,'f-img-label-label','prev-label')" style="display:none"/></div>
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('f-img-label-gallery')"><i class="ti ti-photo"></i><span>เลือกจากคลัง</span><input type="file" id="f-img-label-gallery" accept="image/*" onchange="previewPhoto(this,'f-img-label-label','prev-label')" style="display:none"/></div>
+          </div>
+          <span id="f-img-label-label" style="font-size:11px;color:var(--text-sub);display:block;margin-top:4px">ยังไม่ได้เลือกภาพ</span>
+          <img id="prev-label" class="photo-preview" style="display:none" alt="Preview label"/>
+        </div>
+        
+        <div class="form-group" id="damage-photo-group" style="display:none"><label>📸 รูปส่วนที่ชำรุด</label>
+          <div style="display:flex;gap:8px">
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('f-img-damage-camera')"><i class="ti ti-camera"></i><span>ถ่ายภาพ</span><input type="file" id="f-img-damage-camera" accept="image/*" capture="environment" onchange="previewPhoto(this,'f-img-damage-label','prev-damage')" style="display:none"/></div>
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('f-img-damage-gallery')"><i class="ti ti-photo"></i><span>เลือกจากคลัง</span><input type="file" id="f-img-damage-gallery" accept="image/*" onchange="previewPhoto(this,'f-img-damage-label','prev-damage')" style="display:none"/></div>
+          </div>
+          <span id="f-img-damage-label" style="font-size:11px;color:var(--text-sub);display:block;margin-top:4px">ยังไม่ได้เลือกภาพ</span>
+          <img id="prev-damage" class="photo-preview" style="display:none" alt="Preview damage"/>
+        </div>
+        
+        <div class="form-group"><label>📸 รูปเอกสาร</label>
+          <div style="display:flex;gap:8px">
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('f-img-doc-camera')"><i class="ti ti-camera"></i><span>ถ่ายภาพ</span><input type="file" id="f-img-doc-camera" accept="image/*" capture="environment" onchange="previewPhoto(this,'f-img-doc-label','prev-doc')" style="display:none"/></div>
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('f-img-doc-gallery')"><i class="ti ti-photo"></i><span>เลือกจากคลัง</span><input type="file" id="f-img-doc-gallery" accept="image/*" onchange="previewPhoto(this,'f-img-doc-label','prev-doc')" style="display:none"/></div>
+          </div>
+          <span id="f-img-doc-label" style="font-size:11px;color:var(--text-sub);display:block;margin-top:4px">ยังไม่ได้เลือกภาพ</span>
+          <img id="prev-doc" class="photo-preview" style="display:none" alt="Preview document"/>
+        </div>
+        
+        <div class="form-group"><label>📝 หมายเหตุ</label><textarea id="f-note" rows="3" placeholder="หมายเหตุเพิ่มเติม..."></textarea></div>
+        <button class="btn-primary" onclick="handleSubmit()"><i class="ti ti-device-floppy"></i> บันทึกข้อมูล</button>
+        <div style="height:80px"></div>
+      </div>
+
+      <!-- หน้าแลกของรางวัล -->
+      <div id="pg-rewards" class="page" style="display:none">
+        <div class="form-header">🎁 แลกของรางวัล</div>
+        <div id="rewards-list"></div>
+        <div style="height:80px"></div>
+      </div>
+
+      <!-- หน้าโปรไฟล์ -->
+      <div id="pg-profile" class="page" style="display:none">
+        <div class="profile-card">
+          <div class="profile-avatar-wrap" onclick="triggerPhoto('profile-avatar-input')">
+            <img id="profile-avatar-img" class="profile-avatar-img" src="" style="display:none" alt="Avatar"/>
+            <div class="profile-avatar" id="profile-avatar">M</div>
+            <input type="file" id="profile-avatar-input" accept="image/*" onchange="uploadAvatar(this)" style="display:none"/>
+          </div>
+          <div class="profile-name" id="profile-name">-</div>
+          <div class="profile-role" id="profile-role">-</div>
+          
+          <div class="point-display">
+            <div class="point-icon">⭐</div>
+            <div class="point-value" id="profile-point">0</div>
+            <div class="point-label">G Point</div>
+          </div>
+          
+          <div class="exp-section">
+            <div class="exp-header">
+              <span id="profile-rank">🆕 ผู้ทดลองใช้งาน</span>
+              <span id="profile-exp-text">0 / 10 EXP</span>
+            </div>
+            <div class="exp-bar"><div class="exp-fill" id="exp-fill" style="width:0%"></div></div>
+            <button class="btn-small btn-rank-info" onclick="openRankInfo()"><i class="ti ti-info-circle"></i> ดูเงื่อนไข</button>
+          </div>
+        </div>
+        
+        <div class="menu-list">
+          <button class="menu-item" onclick="showPage('rewards')"><i class="ti ti-gift"></i><span>🎁 แลกของรางวัล</span><i class="ti ti-chevron-right"></i></button>
+          <button class="menu-item" id="menu-admin" style="display:none" onclick="showPage('admin')"><i class="ti ti-users"></i><span>จัดการสมาชิก</span><i class="ti ti-chevron-right"></i></button>
+          <button class="menu-item" onclick="toggleTheme()"><i class="ti ti-sun" id="theme-icon-menu"></i><span id="theme-label-menu">โหมดกลางคืน</span><i class="ti ti-chevron-right"></i></button>
+          <button class="menu-item danger" onclick="handleLogout()"><i class="ti ti-logout"></i><span>ออกจากระบบ</span><i class="ti ti-chevron-right"></i></button>
+        </div>
+        
+        <p class="credit-text" style="margin-top:24px">Designed & Developed by <span>Mix Thompson</span></p>
+        <p class="credit-text" style="margin-top:4px;font-size:10px;opacity:.7">GOR v3.1</p>
+      </div>
+
+      <!-- หน้า Admin -->
+      <div id="pg-admin" class="page" style="display:none">
+        <div class="form-header">👥 จัดการสมาชิก</div>
+        <div id="users-list"></div>
+        <div class="form-header" style="margin-top:24px">🎁 เพิ่มของรางวัล</div>
+        <button class="btn-primary" onclick="openAddReward()"><i class="ti ti-plus"></i> เพิ่มของรางวัลใหม่</button>
+        <div id="admin-rewards-list" style="margin-top:12px"></div>
+        <div style="height:80px"></div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" id="nav-home" onclick="showPage('home')"><i class="ti ti-home"></i><span>หน้าหลัก</span></button>
+      <button class="nav-btn" id="nav-list" onclick="showPage('list')"><i class="ti ti-list"></i><span>รายการ</span></button>
+      <button class="nav-btn nav-center" onclick="showPage('form-select')"><div class="nav-fab"><i class="ti ti-plus"></i></div></button>
+      <button class="nav-btn" id="nav-rewards" onclick="showPage('rewards')"><i class="ti ti-gift"></i><span>รางวัล</span></button>
+      <button class="nav-btn" id="nav-profile" onclick="showPage('profile')"><i class="ti ti-user"></i><span>โปรไฟล์</span></button>
+    </nav>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+  
+  <!-- Detail Modal -->
+  <div id="detail-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeDetail()">
+    <div class="modal-content">
+      <div class="modal-header"><h3 id="modal-title">รายละเอียด</h3><button class="icon-btn" onclick="closeDetail()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+  
+  <!-- Status Modal -->
+  <div id="status-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeStatusModal()">
+    <div class="modal-content">
+      <div class="modal-header"><h3 id="status-modal-title">อัปเดตสถานะ</h3><button class="icon-btn" onclick="closeStatusModal()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body" id="status-modal-body"></div>
+    </div>
+  </div>
+  
+  <!-- Delete Modal -->
+  <div id="delete-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeDeleteModal()">
+    <div class="modal-content">
+      <div class="modal-header"><h3>🔐 ยืนยันการลบ</h3><button class="icon-btn" onclick="closeDeleteModal()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body">
+        <p style="margin-bottom:12px;color:var(--text-sub)">กรุณากรอกรหัสผ่านเพื่อยืนยัน</p>
+        <div class="form-group"><label>รหัสผ่าน</label><input type="password" id="delete-password" placeholder="รหัสผ่านของคุณ"/></div>
+        <div id="delete-error" class="alert-error" style="display:none"></div>
+        <button class="btn-primary" style="background:#A32D2D" onclick="confirmDelete()"><i class="ti ti-trash"></i> ยืนยันการลบ</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Email Modal -->
+  <div id="email-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeEmailModal()">
+    <div class="modal-content">
+      <div class="modal-header"><h3>📧 ส่งข้อมูลทาง Email</h3><button class="icon-btn" onclick="closeEmailModal()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body">
+        <div class="form-group"><label>อีเมลปลายทาง</label><input type="email" id="email-to" placeholder="example@email.com"/></div>
+        <div id="email-error" class="alert-error" style="display:none"></div>
+        <button class="btn-primary" onclick="sendEmail()"><i class="ti ti-send"></i> ส่งข้อมูล</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- User Info Modal -->
+  <div id="user-info-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeUserInfo()">
+    <div class="modal-content" style="max-width:350px;text-align:center">
+      <div class="modal-header"><h3>ข้อมูลผู้ใช้</h3><button class="icon-btn" onclick="closeUserInfo()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body" id="user-info-body"></div>
+    </div>
+  </div>
+  
+  <!-- Rank Info Modal -->
+  <div id="rank-info-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeRankInfo()">
+    <div class="modal-content">
+      <div class="modal-header"><h3>⭐ ระบบแรงค์ & G Point</h3><button class="icon-btn" onclick="closeRankInfo()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body" id="rank-info-body"></div>
+    </div>
+  </div>
+  
+  <!-- Add Reward Modal -->
+  <div id="add-reward-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeAddReward()">
+    <div class="modal-content" style="max-width:550px">
+      <div class="modal-header"><h3>🎁 เพิ่มของรางวัล</h3><button class="icon-btn" onclick="closeAddReward()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body">
+        <div class="form-group"><label>🔐 รหัสลับ</label><input type="password" id="reward-secret" placeholder="กรอกรหัสลับ"/></div>
+        <div id="reward-secret-error" class="alert-error" style="display:none"></div>
+        <div id="reward-form" style="display:none">
+          <div class="form-group"><label>ชื่อของรางวัล</label><input type="text" id="reward-name" placeholder="ชื่อของรางวัล"/></div>
+          <div class="form-group"><label>แบรนด์</label><input type="text" id="reward-brand" placeholder="แบรนด์ของรางวัล"/></div>
+          <div class="form-group"><label>ข้อมูลของรางวัล</label><textarea id="reward-desc" rows="3" placeholder="รายละเอียด..."></textarea></div>
+          <div class="form-group"><label>จำนวนของรางวัล</label><input type="number" id="reward-quantity" value="1" min="1" placeholder="จำนวน"/></div>
+          <div class="form-group"><label>G Point ที่ใช้แลก</label><input type="number" id="reward-cost" min="1" placeholder="เช่น 50"/></div>
+          <div class="form-group"><label>📸 รูปของรางวัล (สูงสุด 5 ภาพ)</label>
+            <div style="display:flex;gap:8px">
+              <div class="photo-upload" style="flex:1" onclick="triggerPhoto('reward-image-camera')"><i class="ti ti-camera"></i><span>ถ่ายภาพ</span><input type="file" id="reward-image-camera" accept="image/*" capture="environment" multiple onchange="previewMultipleRewardPhotos(this)" style="display:none"/></div>
+              <div class="photo-upload" style="flex:1" onclick="triggerPhoto('reward-image-gallery')"><i class="ti ti-photo"></i><span>เลือกจากคลัง</span><input type="file" id="reward-image-gallery" accept="image/*" multiple onchange="previewMultipleRewardPhotos(this)" style="display:none"/></div>
+            </div>
+            <span id="reward-image-label" style="font-size:11px;color:var(--text-sub);display:block;margin-top:4px">ยังไม่ได้เลือกภาพ</span>
+            <div id="prev-reward-images" class="photo-grid"></div>
+          </div>
+          <div id="reward-slide" style="display:none;position:relative;text-align:center;margin-top:8px">
+            <img id="reward-slide-img" style="max-width:100%;border-radius:12px;max-height:250px;object-fit:cover" alt="Reward slide"/>
+            <button onclick="prevRewardSlide()" style="position:absolute;left:4px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:white;border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer">‹</button>
+            <button onclick="nextRewardSlide()" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:white;border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer">›</button>
+            <div id="reward-slide-count" style="margin-top:4px;font-size:11px;color:var(--text-sub)"></div>
+          </div>
+          <button class="btn-primary" onclick="saveReward()"><i class="ti ti-device-floppy"></i> บันทึกของรางวัล</button>
+        </div>
+        <button class="btn-primary" id="btn-verify-secret" onclick="verifySecret()"><i class="ti ti-lock-check"></i> ยืนยันรหัสลับ</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Edit Reward Modal -->
+  <div id="edit-reward-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeEditReward()">
+    <div class="modal-content">
+      <div class="modal-header"><h3>✏️ แก้ไขของรางวัล</h3><button class="icon-btn" onclick="closeEditReward()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body">
+        <div class="form-group"><label>🔐 รหัสลับ</label><input type="password" id="edit-reward-secret"/></div>
+        <div id="edit-reward-secret-error" class="alert-error" style="display:none"></div>
+        <div id="edit-reward-form" style="display:none">
+          <div class="form-group"><label>ชื่อ</label><input type="text" id="edit-reward-name"/></div>
+          <div class="form-group"><label>แบรนด์</label><input type="text" id="edit-reward-brand"/></div>
+          <div class="form-group"><label>คำอธิบาย</label><textarea id="edit-reward-desc" rows="2"></textarea></div>
+          <div class="form-group"><label>จำนวนทั้งหมด</label><input type="number" id="edit-reward-quantity" min="1"/></div>
+          <div class="form-group"><label>คงเหลือ</label><input type="number" id="edit-reward-remaining" min="0"/></div>
+          <div class="form-group"><label>G Point</label><input type="number" id="edit-reward-cost" min="1"/></div>
+          <div class="form-group"><label>รูปใหม่ (ถ้ามี)</label>
+            <div class="photo-upload" onclick="triggerPhoto('edit-reward-image')"><i class="ti ti-photo"></i><span id="edit-reward-image-label">เลือกรูป</span><input type="file" id="edit-reward-image" accept="image/*" onchange="previewPhoto(this,'edit-reward-image-label','prev-edit-reward')" style="display:none"/></div>
+            <img id="prev-edit-reward" class="photo-preview" style="display:none" alt="Edit reward preview"/>
+          </div>
+          <button class="btn-primary" onclick="saveEditReward()"><i class="ti ti-device-floppy"></i> บันทึก</button>
+        </div>
+        <button class="btn-primary" id="btn-verify-edit-secret" onclick="verifyEditSecret()"><i class="ti ti-lock-check"></i> ยืนยันรหัสลับ</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Reward Modal -->
+  <div id="delete-reward-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeDeleteReward()">
+    <div class="modal-content" style="max-width:400px">
+      <div class="modal-header"><h3>🗑️ ลบของรางวัล</h3><button class="icon-btn" onclick="closeDeleteReward()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body">
+        <p style="margin-bottom:12px;color:var(--text-sub)">กรุณากรอกรหัสลับเพื่อยืนยันการลบ</p>
+        <div class="form-group"><label>🔐 รหัสลับ</label><input type="password" id="delete-reward-secret" placeholder="กรอกรหัสลับ"/></div>
+        <div id="delete-reward-error" class="alert-error" style="display:none"></div>
+        <button class="btn-primary" style="background:#A32D2D" onclick="confirmDeleteReward()"><i class="ti ti-trash"></i> ยืนยันการลบ</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notifications Modal -->
+  <div id="noti-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeNotifications()">
+    <div class="modal-content">
+      <div class="modal-header"><h3>🔔 การแจ้งเตือน</h3><button class="icon-btn" onclick="closeNotifications()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body" id="noti-body"></div>
+    </div>
+  </div>
+  
+  <!-- Redeem Success Modal -->
+  <div id="redeem-success-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeRedeemSuccess()">
+    <div class="modal-content" style="max-width:380px;text-align:center">
+      <div class="modal-body" id="redeem-success-body"></div>
+    </div>
+  </div>
+  
+  <!-- Report Modal -->
+  <div id="report-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeReportModal()">
+    <div class="modal-content" style="max-width:500px">
+      <div class="modal-header"><h3>🐛 รายงานปัญหา</h3><button class="icon-btn" onclick="closeReportModal()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body">
+        <div class="form-group"><label>ชื่อเรื่อง</label><input type="text" id="report-title" placeholder="หัวข้อปัญหา"/></div>
+        <div class="form-group"><label>รายละเอียด</label><textarea id="report-desc" rows="3" placeholder="อธิบายปัญหา..."></textarea></div>
+        <div class="form-group"><label>ช่องทางติดต่อกลับ</label><input type="text" id="report-contact" placeholder="เบอร์โทร / LINE ID"/></div>
+        <div class="form-group"><label>แนบรูปภาพ</label>
+          <div class="photo-upload" onclick="triggerPhoto('report-image')"><i class="ti ti-photo"></i><span id="report-image-label">แนบรูป</span><input type="file" id="report-image" accept="image/*" onchange="previewPhoto(this,'report-image-label','prev-report')" style="display:none"/></div>
+          <img id="prev-report" class="photo-preview" style="display:none" alt="Report preview"/>
+        </div>
+        <button class="btn-primary" onclick="submitReport()"><i class="ti ti-send"></i> ส่งรายงาน</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Update Log Modal -->
+  <div id="update-log-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeUpdateLog()">
+    <div class="modal-content">
+      <div class="modal-header"><h3>🆕 GOR v3.1 — มีอะไรใหม่?</h3><button class="icon-btn" onclick="closeUpdateLog()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body" id="update-log-body"></div>
+    </div>
+  </div>
+  
+  <!-- Unboxed Modal -->
+  <div id="unboxed-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeUnboxedForm()">
+    <div class="modal-content" style="max-width:500px">
+      <div class="modal-header"><h3>📦 บันทึกพัสดุยังไม่แกะ</h3><button class="icon-btn" onclick="closeUnboxedForm()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body">
+        <div class="form-group"><label>🔍 บาร์โค้ดใบปะหน้าพัสดุ</label><div class="input-scan-row"><input type="text" id="ub-barcode" placeholder="สแกนหรือพิมพ์บาร์โค้ด..."/><button class="btn-scan" onclick="startScan('ub-barcode')"><i class="ti ti-scan"></i></button></div></div>
+        <div class="form-group"><label>📸 แนบภาพ (สูงสุด 5 ภาพ)</label>
+          <div style="display:flex;gap:8px">
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('ub-images-camera')"><i class="ti ti-camera"></i><span>ถ่ายภาพ</span><input type="file" id="ub-images-camera" accept="image/*" capture="environment" multiple onchange="previewMultipleUnboxedPhotos(this)" style="display:none"/></div>
+            <div class="photo-upload" style="flex:1" onclick="triggerPhoto('ub-images-gallery')"><i class="ti ti-photo"></i><span>เลือกจากคลัง</span><input type="file" id="ub-images-gallery" accept="image/*" multiple onchange="previewMultipleUnboxedPhotos(this)" style="display:none"/></div>
+          </div>
+          <span id="ub-images-label" style="font-size:11px;color:var(--text-sub);display:block;margin-top:4px">ยังไม่ได้เลือกภาพ</span>
+          <div id="prev-ub-images" class="photo-grid"></div>
+        </div>
+        <button class="btn-primary" onclick="submitUnboxed()"><i class="ti ti-device-floppy"></i> บันทึก</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scanner Modal -->
+  <div id="scanner-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;flex-direction:column;padding:20px">
+    <div style="color:white;margin-bottom:16px;font-size:15px;font-family:Inter,sans-serif">จ่อบาร์โค้ดหรือ QR Code ให้ตรงกรอบ</div>
+    <div id="scanner-video" style="width:280px;height:280px;border-radius:16px;border:2px solid #BA7517;overflow:hidden"></div>
+    <button onclick="stopScan()" style="margin-top:20px;padding:12px 32px;background:#BA7517;color:white;border:none;border-radius:12px;font-size:14px;font-family:Inter,sans-serif;cursor:pointer;font-weight:500">ยกเลิก</button>
+  </div>
+
+  <!-- Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function(err) {
+        console.log('ServiceWorker registration failed: ', err);
+      });
+    }
+  </script>
+  
+  <!-- Main JS -->
+  <script src="main.js"></script>
+</body>
+</html>

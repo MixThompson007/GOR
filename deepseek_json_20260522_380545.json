@@ -1,0 +1,17 @@
+{
+  "name": "GOR - GBH Online Return",
+  "short_name": "GOR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#3B6D11",
+  "theme_color": "#3B6D11",
+  "description": "ระบบจัดการสินค้าตีกลับ GBH Online Return",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/7PJXNn4h/007.gif",
+      "sizes": "192x192",
+      "type": "image/gif",
+      "purpose": "any maskable"
+    }
+  ]
+}
