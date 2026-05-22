@@ -6,7 +6,7 @@
 
 // ---- SUPABASE CONFIG ----
 const SUPABASE_URL = 'https://jwlvfmzkmwulihecqcbn.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3bHZmbXprbXd1bGloZWNxY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4MjY0MDAsImV4cCI6MjA2NDQwMjQwMH0.เปลี่ยนเป็น-anon-key-ของคุณ' // ⚠️ เปลี่ยนเป็น ANON KEY จาก Supabase Dashboard > Settings > API
+const SUPABASE_KEY = 'sb_publishable_yZuFmOTAPpSQ5zx8yDXi8g_3uXNOjef' // ⚠️ เปลี่ยนเป็น ANON KEY จาก Supabase Dashboard > Settings > API
 
 const { createClient } = supabase
 const db = createClient(SUPABASE_URL, SUPABASE_KEY)
